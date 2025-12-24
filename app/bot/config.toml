@@ -1,0 +1,22 @@
+[bot]
+mode = "paper"
+market = "digital"
+pair = "EURUSD"
+timeframe = "M15"
+expiry_minutes = 15
+min_payout = 0.82
+max_open = 1
+allow_otc = true
+
+[risk]
+preset = "massaniello"
+stake_pct = 0.02
+martingale_factor = 2.0
+massaniello_steps = 12
+massaniello_target = 0.06
+daily_stop_loss_pct = -0.05
+daily_stop_gain_pct = 0.03
+
+[api]
+host = "0.0.0.0"
+port = 8000

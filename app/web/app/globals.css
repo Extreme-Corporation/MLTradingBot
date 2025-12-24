@@ -1,0 +1,61 @@
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0f1117;
+  color: #f5f7ff;
+}
+
+.page {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.primary {
+  background: #6c5ce7;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #1a1d29;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.panel {
+  background: #1a1d29;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.panel table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.panel th,
+.panel td {
+  text-align: left;
+  padding: 8px;
+}
+
+.panel tbody tr {
+  border-top: 1px solid #2a2f3f;
+}
