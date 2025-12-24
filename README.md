@@ -1,34 +1,124 @@
-# TraderBot
-Build a trader bot which looks at sentiment of live news events and trades appropriately. 
+# MLTradingBot
 
-## See it live and in action 📺
-<img src="https://i.imgur.com/FaQH8rz.png"/>
+Robô de trading educacional para IQ Option com execução em papel (paper) e integração via `iqoptionapi`, mais API e dashboard web.
 
-# Startup 🚀
-1. Create a virtual environment `conda create -n trader python=3.10` 
-2. Activate it `conda activate trader`
-3. Install initial deps `pip install lumibot timedelta alpaca-trade-api==3.1.1`
-4. Install transformers and friends `pip install torch torchvision torchaudio transformers` 
-5. Update the `API_KEY` and `API_SECRET` with values from your Alpaca account 
-6. Run the bot `python tradingbot.py`
+> ⚠️ **Uso educacional apenas**. Não é garantia de lucro. Teste sempre em **conta demo** antes de operar em conta real.
 
-<p>N.B. Torch installation instructions will vary depending on your operating system and hardware. See here for more: 
-<a href="pytorch.org/">PyTorch Installation Instructions</a></p>
+## Estrutura do projeto
 
-If you're getting an SSL error when you attempt to call out to the Alpaca Trading api, you'll need to install the required SSL certificates into your machine.
-1. Download the following intermediate SSL Certificates, these are required to communicate with Alpaca
-* https://letsencrypt.org/certs/lets-encrypt-r3.pem 
-* https://letsencrypt.org/certs/isrg-root-x1-cross-signed.pem 
-2. Once downloaded, change the file extension of each file to `.cer` 
-3. Double click the file and run through the wizard to install it, use all of the default selections. 
+```
+/app
+  /bot
+    /core        # engine, sessão, risco
+    /strategies  # ema_rsi_fractal.py, sma_confluence.py
+    /brokers     # iqoption_client.py
+    /backtest    # runner, métricas
+    /utils       # helpers
+    config.toml
+  /api           # FastAPI
+  /web           # Next.js dashboard
+/tests
+```
 
-</br>
-# Other References 🔗
+## Requisitos
 
-<p>-<a href="github.com/Lumiwealth/lumibot)">Lumibot</a>:trading bot library, makes lifecycle stuff easier .</p>
+* Python 3.11+
+* Node.js 18+ (para o dashboard)
 
-# Who, When, Why?
+## Instalação rápida
 
-👨🏾‍💻 Author: Nick Renotte <br />
-📅 Version: 1.x<br />
-📜 License: This project is licensed under the MIT License </br>
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Configuração
+
+* Copie `.env.example` para `.env` e preencha as credenciais.
+* Ajuste o `app/bot/config.toml` conforme o ativo/timeframe/risco desejado.
+
+### Variáveis principais (config.toml)
+
+* `mode`: `paper` ou `real`
+* `pair`: `EURUSD` (padrão)
+* `timeframe`: `M15`
+* `expiry_minutes`: `15`
+* `risk.preset`: `flat | massaniello | martingale`
+
+## Execução do robô
+
+```bash
+python -m app.bot --mode paper --strategy sma_confluence --pair EURUSD --timeframe M15 --expiry 15
+```
+
+### Backtest
+
+```bash
+python -m app.bot --backtest-csv data/eurusd_m15.csv --backtest-output logs/equity_curve.png
+```
+
+## API (FastAPI)
+
+```bash
+python -m uvicorn app.api.main:app --reload
+```
+
+Endpoints disponíveis:
+
+* `GET /health`
+* `GET /config`
+* `GET /sessions`
+* `GET /orders`
+* `GET /stats`
+
+## Dashboard Web (Next.js)
+
+```bash
+cd app/web
+npm install
+npm run dev
+```
+
+## Estratégias
+
+### `ema_rsi_fractal`
+* Tendência pela EMA(25).
+* RSI(4) zonas 80/20.
+* Fractal(3) como confirmação.
+
+### `sma_confluence` (IQ Option)
+* SMA20, SMA99, SMA200.
+* Opera toques no conjunto das médias (suporte/resistência).
+* Filtros de distância e cruzamentos.
+
+## Risco
+
+* Stake padrão: 2% do saldo (mín. $1)
+* Máximo 1 posição aberta
+* Stop diário e stop por perdas consecutivas
+
+## Testes
+
+```bash
+pytest
+```
+
+## Makefile
+
+```bash
+make bot
+make api
+make web
+make test
+```
+
+## Roadmap
+
+* Integração completa com IQ Option (sessões e sincronismo de payout).
+* Dashboard em tempo real conectado à API.
+* Estratégias adicionais (S/R, RSI multi-TF).
+
+## Aviso legal
+
+Este projeto é estritamente educacional. Operações em mercados financeiros envolvem riscos significativos.
